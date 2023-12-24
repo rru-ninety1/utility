@@ -3,6 +3,7 @@ Utility, documentation...
 
 - [Azure Data Studio](#azure-data-studio)
 - [SSH](#ssh)
+- [Nuget usefull packages](#nuget-usefull-packages)
 
 
 ## Azure Data Studio
@@ -59,3 +60,31 @@ ExecStart=/usr/bin/autossh -o ServerAliveInterval=30 -o "ServerAliveCountMax 3" 
 [Install]
 WantedBy=multi-user.target
 ~~~
+
+<hr>
+
+## Nuget usefull packages
+
+### MediatR
+
+### OperationResultTools
+
+### Ardalis.Specification
+
+### Refit.HttpClientFactory
+
+### Yarp.ReverseProxy
+
+### Serilog.AspNetCore
+
+### Serilog.Sinks.File
+
+### prometheus-net.AspNetCore
+
+### NSubstitute
+
+### FluentAssertions
+
+### MockQueryable.NSubstitute
+
+### FluentValidation.DependencyInjectionExtensions
