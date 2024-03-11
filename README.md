@@ -4,6 +4,7 @@ Utility, documentation...
 - [Azure Data Studio](#azure-data-studio)
 - [SSH](#ssh)
 - [Nuget usefull packages](#nuget-usefull-packages)
+- [Mouse without Borders](#mouse-without-borders)
 
 
 ## Azure Data Studio
@@ -91,3 +92,8 @@ WantedBy=multi-user.target
 ### MockQueryable.NSubstitute
 
 ### FluentValidation.DependencyInjectionExtensions
+
+
+## Mouse without borders
+
+Share mouse and keyboard between Windows pc.
