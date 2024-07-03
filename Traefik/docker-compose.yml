@@ -1,0 +1,68 @@
+services:
+  pihole: # pihole is an example service
+    container_name: pihole
+    image: pihole/pihole:latest
+    security_opt:
+      - apparmor:unconfined
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "8080:80/tcp"
+    environment:
+      TZ: 'Europe/Rome'
+      WEBPASSWORD: 'super-secret-password'
+    volumes:
+      - '/host-path/pihole/etc:/etc/pihole'
+      - '/host-path/pihole/dnsmasq.d:/etc/dnsmasq.d'
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pihole.entrypoints=http"
+      - "traefik.http.routers.pihole.rule=Host(`pihole.mydomain.duckdns.org`)"
+      - "traefik.http.middlewares.pihole-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.pihole-add-admin.addprefix.prefix=/admin"
+      - "traefik.http.routers.pihole.middlewares=pihole-https-redirect, pihole-add-admin"
+      - "traefik.http.routers.pihole-secure.entrypoints=https"
+      - "traefik.http.routers.pihole-secure.rule=Host(`pihole.mydomain.duckdns.org`)"
+      - "traefik.http.routers.pihole-secure.tls=true"
+      - "traefik.http.routers.pihole-secure.service=pihole"
+      - "traefik.http.routers.pihole-secure.middlewares=pihole-add-admin"
+      - "traefik.http.services.pihole.loadbalancer.server.port=80"
+
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+      - apparmor:unconfined
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+        # For DNS challenge with DuckDNS, set the following environment variables
+      - DUCKDNS_TOKEN=<duckdns-token>
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /host-path/traefik/data/traefik.yml:/traefik.yml:ro
+      - /host-path/traefik/data/acme.json:/acme.json
+      - /host-path/traefik/data/config.yml:/config.yml:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=http"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.mydomain.duckdns.org`)"
+      # Auth with basic auth
+      #- "traefik.http.middlewares.traefik-auth.basicauth.users=USER:BASIC_AUTH_PASSWORD"
+      #- "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
+      - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
+      - "traefik.http.routers.traefik-secure.entrypoints=https"
+      - "traefik.http.routers.traefik-secure.rule=Host(`traefik.mydomain.duckdns.org`)"
+      - "traefik.http.routers.traefik-secure.tls=true"
+      # For DNS challenge with DuckDNS, set the following labels
+      - "traefik.http.routers.traefik-secure.tls.certresolver=duckdns"
+      - "traefik.http.routers.traefik-secure.tls.domains[0].main=mydomain.duckdns.org"
+      - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.mydomain.duckdns.org"
+      - "traefik.http.routers.traefik-secure.service=api@internal"
