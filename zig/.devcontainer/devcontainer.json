@@ -1,0 +1,10 @@
+{
+  "name": "zig",
+  "image": "mcr.microsoft.com/vscode/devcontainers/base:bookworm",
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["ziglang.vscode-zig"]
+    }
+  },
+}
