@@ -1,10 +1,16 @@
 {
   "name": "zig",
   "image": "mcr.microsoft.com/vscode/devcontainers/base:bookworm",
-
+  "remoteEnv": {
+    "ZIG_LOCAL_CACHE_DIR": "/home/vscode/.zig-cache"
+  },
   "customizations": {
     "vscode": {
-      "extensions": ["ziglang.vscode-zig"]
+      "extensions": [
+        "ziglang.vscode-zig",
+        "ianic.zig-language-extras"
+      ]
     }
   },
+  "remoteUser": "vscode"
 }
